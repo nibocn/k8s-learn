@@ -1,0 +1,17 @@
+{
+  "name": "kubernetes-practice",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vuepress dev .",
+    "build": "vuepress build .",
+    "export": "vuepress export ."
+  },
+  "author": "NiBo",
+  "license": "MIT",
+  "devDependencies": {
+    "@snowdog/vuepress-plugin-pdf-export": "^1.1.0",
+    "vuepress": "^1.5.4"
+  }
+}
