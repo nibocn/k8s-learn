@@ -60,6 +60,36 @@ Vagrant.configure("2") do |config|
   # View the documentation for the provider you are using for more
   # information on available options.
 
+  config.vm.define :node1 do |node1|
+    node1.vm.hostname = "k8s-node1"
+    node1.vm.network :private_network, ip: "173.10.10.11"
+    node1.vm.provider :virtualbox do |vb|
+      vb.name = "k8s-node1"
+      vb.memory = "1024"
+      vb.cpus = "1"
+    end
+  end
+
+  config.vm.define :node2 do |node2|
+    node2.vm.hostname = "k8s-node2"
+    node2.vm.network :private_network, ip: "173.10.10.12"
+    node2.vm.provider :virtualbox do |vb|
+      vb.name = "k8s-node2"
+      vb.memory = "1024"
+      vb.cpus = "1"
+    end
+  end
+
+  config.vm.define :node3 do |node3|
+    node3.vm.hostname = "k8s-node3"
+    node3.vm.network :private_network, ip: "173.10.10.13"
+    node3.vm.provider :virtualbox do |vb|
+      vb.name = "k8s-node3"
+      vb.memory = "1024"
+      vb.cpus = "1"
+    end
+  end
+
   # Enable provisioning with a shell script. Additional provisioners such as
   # Ansible, Chef, Docker, Puppet and Salt are also available. Please see the
   # documentation for more information about their specific syntax and use.
