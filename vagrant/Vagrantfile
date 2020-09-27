@@ -1,6 +1,26 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+require 'yaml'
+
+puts ""
+puts "│▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒│"
+puts " 基于 Vagrant 的 Kubernetes 练习"
+puts "----------------------------------------------------------------------------------"
+puts " 作者：倪波 <nibocn@gmail.com>"
+puts "│▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒│"
+puts ""
+puts ""
+
+# -------------------------------------------------
+# Variables
+# -------------------------------------------------
+params = YAML.load_file 'config/vagrant.yml'
+
+var_group_name = params['shared']['group_name']
+
+var_docker_ce_repo_url = params['env']['docker_ce_repo_url']
+
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
@@ -67,6 +87,8 @@ Vagrant.configure("2") do |config|
       vb.name = "k8s-node1"
       vb.memory = "1024"
       vb.cpus = "1"
+      # 指定虚拟机分组
+      vb.customize ["modifyvm", :id, "--groups", var_group_name] unless var_group_name.nil?
     end
   end
 
@@ -77,6 +99,8 @@ Vagrant.configure("2") do |config|
       vb.name = "k8s-node2"
       vb.memory = "1024"
       vb.cpus = "1"
+      # 指定虚拟机分组
+      vb.customize ["modifyvm", :id, "--groups", var_group_name] unless var_group_name.nil?
     end
   end
 
@@ -87,8 +111,20 @@ Vagrant.configure("2") do |config|
       vb.name = "k8s-node3"
       vb.memory = "1024"
       vb.cpus = "1"
+      # 指定虚拟机分组
+      vb.customize ["modifyvm", :id, "--groups", var_group_name] unless var_group_name.nil?
     end
   end
+
+  # 启用密码登录
+  config.vm.provision "shell", inline: <<-SHELL
+    sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
+    /bin/systemctl restart sshd
+  SHELL
+
+  config.vm.provision "shell", path:"scripts/01_setup.sh", env: {
+    "DOCER_CE_REPO_URL" => var_docker_ce_repo_url,
+  }
 
   # Enable provisioning with a shell script. Additional provisioners such as
   # Ansible, Chef, Docker, Puppet and Salt are also available. Please see the

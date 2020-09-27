@@ -1,0 +1,4 @@
+shared:
+  group_name: /k8s-learn
+env:
+  docker_ce_repo_url: http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
