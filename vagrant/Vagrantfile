@@ -20,6 +20,19 @@ params = YAML.load_file 'config/vagrant.yml'
 var_group_name = params['shared']['group_name']
 
 var_docker_ce_repo_url = params['env']['docker_ce_repo_url']
+var_docker_version = params['env']['docker_version']
+var_docker_mirror_url = params['env']['docker_mirror_url']
+
+# Get host time zone for setting VM time zone
+offset_sec = Time.now.gmt_offset
+if (offset_sec % (60 * 60)) == 0
+  offset_hr = ((offset_sec / 60) / 60)
+  timezone_suffix = offset_hr >= 0 ? "-#{offset_hr.to_s}" : "+#{(-offset_hr).to_s}"
+  var_system_timezone = 'Etc/GMT' + timezone_suffix
+else
+  # if host time zone isn't an integer hour offset, fall back to UTC
+  var_system_timezone = 'UTC'
+end
 
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
@@ -122,8 +135,11 @@ Vagrant.configure("2") do |config|
     /bin/systemctl restart sshd
   SHELL
 
-  config.vm.provision "shell", path:"scripts/01_setup.sh", env: {
-    "DOCER_CE_REPO_URL" => var_docker_ce_repo_url,
+  config.vm.provision "shell", path:"scripts/setup.sh", env: {
+    "DOCKER_CE_REPO_URL" => var_docker_ce_repo_url,
+    "DOCKER_VERSION" => var_docker_version,
+    "DOCKER_MIRROR_URL" => var_docker_mirror_url,
+    "SYSTEM_TIMEZONE" => var_system_timezone,
   }
 
   # Enable provisioning with a shell script. Additional provisioners such as
