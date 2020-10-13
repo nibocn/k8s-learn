@@ -1,0 +1,119 @@
+set nocompatible
+filetype off
+
+"设置方法高亮
+syntax enable
+syntax on
+
+"设置英文语言环境
+let $LANG='en'
+"取消拼写检查
+set nospell
+"设置菜单为英文
+set langmenu=en
+"设置内部编码为utf-8
+set encoding=utf-8
+"设置打开文件时使用的编码顺序
+set fileencodings=utf-8,cp936,chinese,latin-1
+"设置消息为英文并使用utf-8编码
+language messages en_US.utf-8
+"设置行号
+set number
+"设置主题
+" colorscheme desert
+colorscheme ron
+" 设置字体不加粗
+set t_md=
+"高亮显示匹配的括号
+set showmatch
+"设置命令行高为2
+set cmdheight=2
+"高亮当前行
+"set cursorline
+"高亮显示匹配结果
+set hlsearch
+"在输入要搜索的文字时，vim实时匹配
+set incsearch
+"设置搜索时当输入字母有大写时，区分大小写
+"否则不区分
+set ignorecase smartcase
+"修改leader 键
+let mapleader=' '
+"自动换行
+set wrap
+set vb t_vb=
+"增强命令行的搜索显示
+set wildmenu
+"根据打开的文件自动切换工作目录
+set autochdir
+" 设置相对行号
+set relativenumber
+
+"允许退格键的使用
+set backspace=indent,eol,start whichwrap+=<,>,[,]
+" 消除高亮显示匹配结果
+nnoremap <C-n> :nohl<CR>
+"取消/开启自动换行（normal 模式：,w）
+nnoremap <leader>w :set wrap!<CR>
+"新建标签页(normal 模式：,t)
+nnoremap <leader>t :tabnew<CR>
+" 设置行号(normal 模式：,nu)
+nnoremap <leader>nu :set nu! <bar> :set relativenumber! <CR>
+" 设置相对行号
+nnoremap <leader>rnu :set relativenumber! <CR>
+" 解决粘贴内容到 Vim 终端缩进错乱（normal 模式：,pa）
+nnoremap <leader>pa :set paste!<CR>
+
+" 制表符(设置所有的tab和缩进为4个空格) {
+" 设置tab键的宽度
+set tabstop=4
+" 换行时行间交错使用4个空格
+set shiftwidth=4
+" 自动缩进4空格
+set cindent shiftwidth=4
+set softtabstop=4
+" 使用空格来替换tab
+set expandtab
+" 开启新行时使用智能 tab 缩进
+set smarttab
+" }
+
+" 设置自动缩进
+set autoindent
+" 设置智能缩进
+set smartindent
+
+" 设置显示制表符和行尾空格符号，末尾回车换行符设置 eol:$
+set listchars=tab:»\ ,trail:.
+" 显示制表符（Tab）、行尾空格、回车换行符
+set list
+
+
+"Status line {
+set laststatus=2
+set statusline=
+set statusline+=%-3.3n                      " buffer number
+set statusline+=%F%m%r%h%w                   "path+filename
+set statusline+=\[row=%l,col=%v]            "show line and column
+set statusline+=%h%m%r%w                     " status flags
+set statusline+=[%{strlen(&ft)?&ft:'none'}] " file type
+set statusline+=%=                           " right align remainder
+set statusline+=0x%-8b                       " character value
+set statusline+=%-14(%l,%c%v%)               " line, character
+set statusline+=%<%p                         " file position
+"}
+
+
+if has('autocmd')
+    augroup vimrcExtension
+        autocmd!
+        autocmd InsertLeave * set nopaste
+    augroup end
+endif
+
+" 指定 yaml 文件缩进 {
+au FileType yaml,yml set ai
+au FileType yaml,yml set sw=2
+au FileType yaml,yml set ts=2
+au FileType yaml,yml set sts=2
+" }

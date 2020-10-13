@@ -9,20 +9,35 @@ if [[ -z "$DOCKER_CE_REPO_URL" ]]; then
   DOCKER_CE_REPO_URL=https://download.docker.com/linux/centos/docker-ce.repo
 fi
 echo "Docker ce repo url: $DOCKER_CE_REPO_URL"
+echo "**** Add docker repo ****"
 
-echo "****** Add docker repo ******"
 yum-config-manager --add-repo $DOCKER_CE_REPO_URL
 
-echo "****** Install docker ce ******"
+echo "**** Install docker ce ****"
 yum install -y docker-ce-$DOCKER_VERSION
 
 if [[ -n "$DOCKER_MIRROR_URL" ]]; then
-  echo "****** Setting docker mirror ******"
+  echo "**** Setting docker mirror ****"
   mkdir -p /etc/docker
-  echo "{\"registry-mirrors\": [\"$DOCKER_MIRROR_URL\"]}" >> /etc/docker/daemon.json
+cat > /etc/docker/daemon.json <<EOF
+{
+  "registry-mirrors": ["${DOCKER_MIRROR_URL}"],
+  "exec-opts": ["native.cgroupdriver=systemd"],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "100m"
+  },
+  "storage-driver": "overlay2",
+  "storage-opts": [
+    "overlay2.override_kernel_check=true"
+  ]
+}
+EOF
 fi
 
-echo "****** Start docker ******"
-# systemctl daemon-reload
+echo "**** Start docker ****"
+systemctl daemon-reload
 systemctl enable docker
-systemctl start docker
+systemctl restart docker
+
+usermod -aG docker vagrant
