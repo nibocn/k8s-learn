@@ -3,23 +3,34 @@ shared:
 env:
   docker_ce_repo_url: http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
   docker_version: 19.03.13
-  docker_mirror_url: https://registry.cn-hangzhou.aliyuncs.com
+  docker_mirror_url: https://xywhyayv.mirror.aliyuncs.com
 k8s:
   version: 1.19.2
   apiserver_name: apiserver.demo
   pod_subnet: 10.100.0.1/16
+rancher:
+  version: 2.5.1
 node1:
   vm_name: k8s-node1
   mem_size: 2048
   cpus: 2
-  private_ip: 173.10.10.11
+  private_ip: 192.168.33.11
+  public_ip: 192.168.100.11
 node2:
   vm_name: k8s-node2
   mem_size: 1024
   cpus: 1
-  private_ip: 173.10.10.12
+  private_ip: 192.168.33.12
+  public_ip: 192.168.100.12
 node3:
   vm_name: k8s-node3
   mem_size: 1024
   cpus: 1
-  private_ip: 173.10.10.13
+  private_ip: 192.168.33.13
+  public_ip: 192.168.100.13
+node4:
+  vm_name: rancher
+  mem_size: 2048
+  cpus: 1
+  private_ip: 192.168.33.14
+  public_ip: 192.168.100.14

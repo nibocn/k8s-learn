@@ -27,20 +27,31 @@ var_k8s_version = params['k8s']['version']
 var_k8s_apiserver_name = params['k8s']['apiserver_name']
 var_k8s_pod_subnet = params['k8s']['pod_subnet']
 
+var_rancher_version = params['rancher']['version']
+
 var_vm1_name = params['node1']['vm_name']
 var_vm1_mem_size = params['node1']['mem_size']
 var_vm1_cpus = params['node1']['cpus']
 var_vm1_private_ip = params['node1']['private_ip']
+var_vm1_public_ip = params['node1']['public_ip']
 
 var_vm2_name = params['node2']['vm_name']
 var_vm2_mem_size = params['node2']['mem_size']
 var_vm2_cpus = params['node2']['cpus']
 var_vm2_private_ip = params['node2']['private_ip']
+var_vm2_public_ip = params['node2']['public_ip']
 
 var_vm3_name = params['node3']['vm_name']
 var_vm3_mem_size = params['node3']['mem_size']
 var_vm3_cpus = params['node3']['cpus']
 var_vm3_private_ip = params['node3']['private_ip']
+var_vm3_public_ip = params['node3']['public_ip']
+
+var_vm4_name = params['node4']['vm_name']
+var_vm4_mem_size = params['node4']['mem_size']
+var_vm4_cpus = params['node4']['cpus']
+var_vm4_private_ip = params['node4']['private_ip']
+var_vm4_public_ip = params['node4']['public_ip']
 
 # Get host time zone for setting VM time zone
 offset_sec = Time.now.gmt_offset
@@ -58,7 +69,8 @@ Vagrant.configure("2") do |config|
 
   config.vm.define :node1 do |node1|
     node1.vm.hostname = var_vm1_name
-    node1.vm.network :private_network, ip: var_vm1_private_ip
+    node1.vm.network :private_network, ip: var_vm1_private_ip, virtualbox__intnet: "private"
+    node1.vm.network :private_network, ip: var_vm1_public_ip, virtualbox__hostonly: "vboxnet0"
     node1.vm.provider :virtualbox do |vb|
       vb.name = var_vm1_name
       vb.memory = var_vm1_mem_size
@@ -70,7 +82,8 @@ Vagrant.configure("2") do |config|
 
   config.vm.define :node2 do |node2|
     node2.vm.hostname = var_vm2_name
-    node2.vm.network :private_network, ip: var_vm2_private_ip
+    node2.vm.network :private_network, ip: var_vm2_private_ip, virtualbox__intnet: "private"
+    node2.vm.network :private_network, ip: var_vm2_public_ip, virtualbox__hostonly: "vboxnet0"
     node2.vm.provider :virtualbox do |vb|
       vb.name = var_vm2_name
       vb.memory = var_vm2_mem_size
@@ -82,11 +95,25 @@ Vagrant.configure("2") do |config|
 
   config.vm.define :node3 do |node3|
     node3.vm.hostname = var_vm3_name
-    node3.vm.network :private_network, ip: var_vm3_private_ip
+    node3.vm.network :private_network, ip: var_vm3_private_ip, virtualbox__intnet: "private"
+    node3.vm.network :private_network, ip: var_vm3_public_ip, virtualbox__hostonly: "vboxnet0"
     node3.vm.provider :virtualbox do |vb|
       vb.name = var_vm3_name
       vb.memory = var_vm3_mem_size
       vb.cpus = var_vm3_cpus
+      # 指定虚拟机分组
+      vb.customize ["modifyvm", :id, "--groups", var_group_name] unless var_group_name.nil?
+    end
+  end
+
+  config.vm.define :rancher do |rancher|
+    rancher.vm.hostname = var_vm4_name
+    rancher.vm.network :private_network, ip: var_vm4_private_ip, virtualbox__intnet: "private"
+    rancher.vm.network :private_network, ip: var_vm4_public_ip, virtualbox__hostonly: "vboxnet0"
+    rancher.vm.provider :virtualbox do |vb|
+      vb.name = var_vm4_name
+      vb.memory = var_vm4_mem_size
+      vb.cpus = var_vm4_cpus
       # 指定虚拟机分组
       vb.customize ["modifyvm", :id, "--groups", var_group_name] unless var_group_name.nil?
     end
@@ -99,10 +126,12 @@ Vagrant.configure("2") do |config|
     "K8S_VERSION" => var_k8s_version,
     "K8S_APISERVER_NAME" => var_k8s_apiserver_name,
     "K8S_POD_SUBNET" => var_k8s_pod_subnet,
+    "RANCHER_VERSION" => var_rancher_version,
     "SYSTEM_TIMEZONE" => var_system_timezone,
     "NODE1_HOSTNAME" => var_vm1_name,
     "NODE2_HOSTNAME" => var_vm2_name,
     "NODE3_HOSTNAME" => var_vm3_name,
+    "NODE4_HOSTNAME" => var_vm4_name,
     "NODE1_IP" => var_vm1_private_ip,
     "NODE2_IP" => var_vm2_private_ip,
     "NODE3_IP" => var_vm3_private_ip,

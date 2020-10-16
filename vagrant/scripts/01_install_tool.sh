@@ -5,7 +5,7 @@ echo -e "${INFO}`date +%F' '%T`: Install tool"
 echo "-----------------------------------------------------------------"
 
 echo "**** Install vim zsh unzip ****"
-yum install -y vim zsh unzip
+yum install -y vim zsh unzip net-tools
 
 mv /etc/vimrc{,.bak}
 cp /vagrant/config/vimrc /etc/

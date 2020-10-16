@@ -24,5 +24,10 @@ systemctl restart sshd
 sh /vagrant/scripts/01_install_tool.sh
 # Install docker
 sh /vagrant/scripts/02_install_docker.sh
-# Install kubernetes
-sh /vagrant/scripts/03_install_kubernetes.sh
+if [[ `hostname` == ${NODE4_HOSTNAME} ]]; then
+  # Install rancher
+  sh /vargrant/scripts/04_install_rancher.sh
+else
+  # Install kubernetes
+  sh /vagrant/scripts/03_install_kubernetes.sh
+fi
